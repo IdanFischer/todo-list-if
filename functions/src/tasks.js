@@ -13,8 +13,8 @@ export async function getAllTasks(req, res) {
 }
 
 export async function addTask(req, res) {
-  const { task } = req.body;
-  const newTask = { task, createdAt: FieldValue.serverTimestamp() }
+  const { done ,task } = req.body;
+  const newTask = { done, task, createdAt: FieldValue.serverTimestamp() }
   const db = await getFirestoreInstance()
   db.collection('tasks').add(newTask)
     .then(() => getAllTasks(req, res))
