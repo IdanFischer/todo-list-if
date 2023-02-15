@@ -22,10 +22,30 @@ export async function addTask(req, res) {
 }
 
 export async function updateTask(req, res) {
-  const { done } = req.body
+  const { task, done } = req.body
+  // looks for the params of the url
+  if (!done){
+    res.send({error:"done is a required field"})
+    return
+  }
+  const { taskId } = req.params
+
+  const db = await getFirestoreInstance()
+
+  db.collection('tasks').doc(taskId).update({ task, done })
+    .then(() => getAllTasks(req, res))
+    .catch(err => res.status(500).json({ error: err.message }))
+}
+// DELETE
+
+export async function deleteTask(req, res) {
+  // looks for the params of the url
   const { taskId } = req.params
   const db = await getFirestoreInstance()
-  db.collection('tasks').doc(taskId).update({ done })
+
+  db.collection('tasks')
+    .doc(taskId)
+    .delete()
     .then(() => getAllTasks(req, res))
     .catch(err => res.status(500).json({ error: err.message }))
 }
