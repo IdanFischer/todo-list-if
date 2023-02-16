@@ -22,17 +22,18 @@ export async function addTask(req, res) {
 }
 
 export async function updateTask(req, res) {
-  const { task, done } = req.body
   // looks for the params of the url
-  if (!done){
-    res.send({error:"done is a required field"})
-    return
-  }
+  const { done } = req.body
+  // if i allow both task and done to be changed
+  // if (!done){
+  //   res.send({error:"done is a required field"})
+  //   return
+  // }
   const { taskId } = req.params
 
   const db = await getFirestoreInstance()
 
-  db.collection('tasks').doc(taskId).update({ task, done })
+  db.collection('tasks').doc(taskId).update({ done })
     .then(() => getAllTasks(req, res))
     .catch(err => res.status(500).json({ error: err.message }))
 }
